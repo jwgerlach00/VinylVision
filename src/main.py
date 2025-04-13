@@ -35,15 +35,33 @@ if __name__ == "__main__":
 
     model = "vision"
 
+    # Query model for album name and record side
     if model == "text":
         image = Image.open(image_path)
         ocr = Ocr()
         extracted_text = ocr.run(image)
         text_model = Text()
         out = text_model.get_album_name_and_side(extracted_text)
-        logger.info(out)
-
-    if model == "vision":
+    elif model == "vision":
         vision_model = Vision()
         out = vision_model.get_album_name_and_side(image_path=image_path)
-        logger.info(out)
+    else:
+        raise NotImplementedError(f"model type {model} is not implemented")
+
+    # Parse results
+    if len(out) < 1 or len(out) > 2:
+        raise ValueError("the model did not return the expected number of results")
+    album_name = out[0]
+    record_side = 1 # if the model can't figure out the record side, we default to 1
+    logger.info(f"Album name: {album_name}")
+    if len(out) == 2:
+        record_side = int(out[1])
+        logger.info(f"Record side: {record_side}")
+
+    # Search for album in Discogs
+    releases = client.search(album_name, type='release')
+    if len(releases) == 0:
+        raise ValueError(f"no releases found for album name: {album_name}")
+    release = releases[0]
+
+    logger.info(f"Tracklist: {release.tracklist}")
