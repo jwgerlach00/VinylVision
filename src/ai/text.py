@@ -3,10 +3,10 @@ import ollama
 from config import Config
 
 
-class Llm:
+class Text:
 
     def __init__(self):
-        self.model = Config.ollama_llm_model
+        self.model = Config.ollama_text_model
 
     def get_album_name_and_side(self, vinyl_label_text: str) -> Tuple[str, int]:
         prompt = lambda text: f"""

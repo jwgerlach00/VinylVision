@@ -3,10 +3,10 @@ import ollama
 from config import Config
 
 
-class Llava:
+class Vision:
 
     def __init__(self):
-        self.model = Config.ollama_llava_model
+        self.model = Config.ollama_vision_model
 
     def get_album_name_and_side(self, image_path: str) -> Tuple[str, int]:
         query = f"""
