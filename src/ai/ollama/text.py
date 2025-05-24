@@ -20,9 +20,6 @@ class Text:
         response = self._query(query)
         lines = response.split("\n")
         return lines
-        # album_name: str = lines[0].strip()
-        # vinyl_side: str = lines[1].strip()
-        # return album_name, int(vinyl_side)
 
     def _query(self, query: str) -> str:
         response = ollama.chat(

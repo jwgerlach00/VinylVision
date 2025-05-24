@@ -9,7 +9,7 @@ class Vision:
         self.model = Config.ollama_vision_model
 
     def get_album_name_and_side(self, image_path: str) -> Tuple[str, int]:
-        query = f"""
+        query = """
         This is an image of a vinyl record label, including the "center label" or "vinyl label" area in the middle of the record.
         I need you to extract the vinyl album name and vinyl side from the image.
         The album name is usually at the top of the label, and the vinyl side is usually a number or letter at the bottom.
@@ -21,9 +21,6 @@ class Vision:
         response = self._query(query, image_path)
         lines = response.split("\n")
         return lines
-        # album_name: str = lines[0].strip()
-        # vinyl_side: str = lines[1].strip()
-        # return album_name, int(vinyl_side)
 
     def _query(self, query: str, image_path: str) -> str:
         response = ollama.chat(

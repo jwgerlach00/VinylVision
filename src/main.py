@@ -3,7 +3,7 @@ import tempfile
 from config import Config
 from discogs import Client
 from ocr import Ocr
-from ai import Text, Vision
+from ai import OpenAiVision
 
 
 def preprocess_image(image: Image) -> Image:
@@ -28,25 +28,28 @@ if __name__ == "__main__":
     TOKEN = Config.discogs_pat
     client = Client(TOKEN)
 
-    image_path = "src/resources/fleetwood-close.jpg"
+    image_path = "src/resources/fleetwood.jpg"
     image = Image.open(image_path)
     image = preprocess_image(image)
     image_path = save_temp_image(image)
 
-    model = "vision"
+    model = OpenAiVision()
+    out = model.get_album_name_and_side(image_path=image_path)
 
-    # Query model for album name and record side
-    if model == "text":
-        image = Image.open(image_path)
-        ocr = Ocr()
-        extracted_text = ocr.run(image)
-        text_model = Text()
-        out = text_model.get_album_name_and_side(extracted_text)
-    elif model == "vision":
-        vision_model = Vision()
-        out = vision_model.get_album_name_and_side(image_path=image_path)
-    else:
-        raise NotImplementedError(f"model type {model} is not implemented")
+    # model = "vision"
+
+    # # Query model for album name and record side
+    # if model == "text":
+    #     image = Image.open(image_path)
+    #     ocr = Ocr()
+    #     extracted_text = ocr.run(image)
+    #     text_model = Text()
+    #     out = text_model.get_album_name_and_side(extracted_text)
+    # elif model == "vision":
+    #     vision_model = Vision()
+    #     out = vision_model.get_album_name_and_side(image_path=image_path)
+    # else:
+    #     raise NotImplementedError(f"model type {model} is not implemented")
 
     # Parse results
     if len(out) < 1 or len(out) > 2:
